@@ -26,12 +26,39 @@ namespace BaseProject.API.Areas.Gerenciamento.Controllers
 		)
 		{
             _idUsuario = Int32.Parse(httpContextAccessor.HttpContext.User.FindFirstValue("IdUsuario"));
-            _idEmpresa = _serviceUsuario.ObterIdEmpresaSelecionada(httpContextAccessor.HttpContext);
+            _idEmpresa = serviceUsuario.ObterIdEmpresaSelecionada(httpContextAccessor.HttpContext);
 			_serviceUsuario = serviceUsuario;
             _serviceEmpresa = serviceEmpresa;
         }
 
-		[HttpPost("Listar")]
+        [Authorize(Roles = "Administrador")]
+        [HttpGet("ObterParaSelect")]
+        public IActionResult ObterParaSelect()
+        {
+            var dados = new EmpresasAdmVM
+            {
+                Empresas = _serviceEmpresa.ObterParaSelect(true),
+                IdEmpresaSelecionada = _serviceUsuario.ObterIdEmpresaSelecionada(_idUsuario) ?? 0,
+            };
+
+            return Json(this.CreateResponseObject(true, dados));
+        }
+
+        [Authorize(Roles = "Administrador")]
+        [HttpPut("EditarEmpresaSelecionada")]
+        public IActionResult EditarEmpresaSelecionada([FromQuery] int idEmpresa)
+        {
+            var usuario = _serviceUsuario.ObterPorId(_idUsuario);
+
+            if (idEmpresa > 0) usuario.IdEmpresaSelecionada = idEmpresa;
+            else usuario.IdEmpresaSelecionada = null;
+
+            var sucesso = _serviceUsuario.Editar(usuario);
+
+            return Json(this.CreateResponseObject(sucesso, errorMessage: "Erro ao editar a empresa do usuário ADM"));
+        }
+
+        [HttpPost("Listar")]
 		public IActionResult Listar([FromBody] DTParam<EmpresaFM> param)
 		{
 			var result = _serviceEmpresa.Listar(param);

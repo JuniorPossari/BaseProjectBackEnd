@@ -161,7 +161,12 @@ namespace BaseProject.DAO.Service
 				);
 		}
 
-		public int ObterIdEmpresaSelecionada(HttpContext httpContext)
+        public int? ObterIdEmpresaSelecionada(int idUsuario)
+        {
+            return _repositoryUsuario.Select(x => x.IdEmpresaSelecionada, x => x.Id == idUsuario).FirstOrDefault();
+        }
+
+        public int ObterIdEmpresaSelecionada(HttpContext httpContext)
 		{
             var idUsuario = Int32.Parse(httpContext.User.FindFirstValue("IdUsuario"));
 

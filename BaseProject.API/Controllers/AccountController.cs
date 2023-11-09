@@ -78,7 +78,7 @@ namespace BaseProject.API.Controllers
 
             bool sucesso = false;
 
-            var empresa = _serviceEmpresa.ObterPorDominio(dominio, "Servico");
+            var empresa = _serviceEmpresa.ObterPorDominio(dominio);
 
             if (empresa == null)
             {
@@ -230,7 +230,7 @@ namespace BaseProject.API.Controllers
 
             var usuario = _serviceUsuario.ObterPorId(idUsuario);
 
-            var user = _serviceAspNetUser.ObterPorEmail(usuario.Email, "Usuario.IdEmpresaNavigation.EmpresaLogo,Usuario.UsuarioFoto,Usuario.IdEmpresaNavigation.Servico");
+            var user = _serviceAspNetUser.ObterPorEmail(usuario.Email, "Usuario.IdEmpresaNavigation.EmpresaLogo,Usuario.UsuarioFoto");
 
             var roles = await _userManager.GetRolesAsync(user);
 
@@ -252,7 +252,7 @@ namespace BaseProject.API.Controllers
         [HttpPost("SignIn")]
         public async Task<IActionResult> SignIn([FromBody] SignInVM model)
         {
-			var user = _serviceAspNetUser.ObterPorEmail(model.Email, "Usuario.IdEmpresaNavigation.EmpresaLogo,Usuario.UsuarioFoto,Usuario.IdEmpresaNavigation.Servico");
+			var user = _serviceAspNetUser.ObterPorEmail(model.Email, "Usuario.IdEmpresaNavigation.EmpresaLogo,Usuario.UsuarioFoto");
 
             var roles = await _userManager.GetRolesAsync(user);
 

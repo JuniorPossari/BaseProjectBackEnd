@@ -38,6 +38,30 @@ namespace BaseProject.DAO.Service
             return _repositoryEmpresa.Get(includeProperties: includeProperties, noTracking: noTracking);
         }
 
+        public EmpresaVM[] ObterParaSelect(bool? ativa = null)
+        {
+            if (ativa.HasValue) return _repositoryEmpresa.Select(
+            x => new EmpresaVM 
+            { 
+                Id = x.Id, 
+                Dominio = x.Dominio,
+                RazaoSocial = x.RazaoSocial 
+            }, 
+            x => x.Ativa == ativa,
+            noTracking: true
+            ).ToArray();
+
+            return _repositoryEmpresa.Select(
+            x => new EmpresaVM
+            {
+                Id = x.Id,
+                Dominio = x.Dominio,
+                RazaoSocial = x.RazaoSocial
+            },
+            noTracking: true
+            ).ToArray();
+        }
+
         public bool Adicionar(Empresa entity)
         {
             return _repositoryEmpresa.Insert(entity);

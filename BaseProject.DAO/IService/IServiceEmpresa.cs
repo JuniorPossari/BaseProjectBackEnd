@@ -10,6 +10,7 @@ namespace BaseProject.DAO.IService
     {
         Empresa ObterPorDominio(string dominio, string includeProperties = "");
         Empresa[] ObterPorIdRepresentante(int idRepresentante, string includeProperties = "");
+        EmpresaVM[] ObterParaSelect(bool? ativa = null);
         bool Existe(string dominio);
         DTResult<EmpresaVM> Listar(DTParam<EmpresaFM> param);
         S2Result ListarSelect2(S2Param param);

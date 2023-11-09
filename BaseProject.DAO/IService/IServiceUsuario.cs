@@ -19,6 +19,7 @@ namespace BaseProject.DAO.IService
         DTResult<UsuarioVM> Listar(DTParam<UsuarioFM> param, int idEmpresa);
         int ObterQtdUsuarioPorEmpresa(int idEmpresa);
 		UsuarioVM[] ObterParaSelect(int idEmpresaUsuario, string includeProperties = "", bool noTracking = true);
+        int? ObterIdEmpresaSelecionada(int idUsuario);
         int ObterIdEmpresaSelecionada(HttpContext httpContext);	
 	}
 }

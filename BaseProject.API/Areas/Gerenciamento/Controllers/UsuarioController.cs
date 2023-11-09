@@ -41,7 +41,7 @@ namespace BaseProject.API.Areas.Gerenciamento.Controllers
         )
         {
             _idUsuario = Int32.Parse(httpContextAccessor.HttpContext.User.FindFirstValue("IdUsuario"));
-            _idEmpresa = _serviceUsuario.ObterIdEmpresaSelecionada(httpContextAccessor.HttpContext);
+            _idEmpresa = serviceUsuario.ObterIdEmpresaSelecionada(httpContextAccessor.HttpContext);
             _userManager = userManager;
             _serviceAspNetUser = serviceAspNetUser;
             _serviceUsuario = serviceUsuario;

@@ -322,18 +322,11 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
+app.MapControllers();
 
-    endpoints.MapControllerRoute(
-        name: "areaRoute",
-        pattern: "{area:exists}/{controller}/{action}/{id?}");
-    
-    endpoints.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Dashboard}/{action=Index}/{id?}");
-});
+app.MapControllerRoute(name: "areaRoute", pattern: "{area:exists}/{controller}/{action}/{id?}");
+
+app.MapControllerRoute(name: "default", pattern: "{controller=Dashboard}/{action=Index}/{id?}");
 
 app.MapRazorPages();
 

@@ -177,7 +177,7 @@ namespace BaseProject.DAO.Service
 
                         if (existeCPF) throw new Exception($"Esse CPF ({cpf}) já está vinculado a uma conta!");
 
-                        var senha = StringExtensions.RandomPassword(14);
+                        var senha = TextExtensions.RandomPassword(14);
 
                         var user = new AspNetUser
                         {

@@ -1,6 +1,6 @@
 # BaseProject
 
-Projeto backend de base para desenvolvimento de novos projetos (.NET Core 6)
+Projeto backend de base para desenvolvimento de novos projetos (.NET Core 8)
 
 * Login, registro e recuperação/alteração de senha (Identity)
 

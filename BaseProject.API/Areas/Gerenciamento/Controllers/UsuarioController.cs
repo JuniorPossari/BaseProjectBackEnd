@@ -191,7 +191,7 @@ namespace BaseProject.API.Areas.Gerenciamento.Controllers
 
             if (existeCPF) return Json(this.CreateResponseObject(false, errorMessage: "Esse CPF já está vinculado a uma conta!"));
 
-            var senha = StringExtensions.RandomPassword(14);
+            var senha = TextExtensions.RandomPassword(14);
 
             var user = new AspNetUser
             {

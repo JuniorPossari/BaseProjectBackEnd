@@ -91,7 +91,7 @@ namespace BaseProject.Test.Controllers
         [Fact]
         public async Task SignUp_ErroDominioInvalido()
         {
-            var password = StringExtensions.RandomPassword(8);
+            var password = TextExtensions.RandomPassword(8);
 
             var model = new SignUpVM
             {
@@ -116,7 +116,7 @@ namespace BaseProject.Test.Controllers
         {
             _serviceUsuarioMock.Setup(x => x.ExisteEmail(It.IsAny<string>())).Returns(true);
 
-            var password = StringExtensions.RandomPassword(8);
+            var password = TextExtensions.RandomPassword(8);
 
             var model = new SignUpVM
             {
@@ -139,7 +139,7 @@ namespace BaseProject.Test.Controllers
         [Fact]
         public async Task SignUp_SucessoCriarConta()
         {
-            var password = StringExtensions.RandomPassword(8);
+            var password = TextExtensions.RandomPassword(8);
 
             var model = new SignUpVM
             {
@@ -169,7 +169,7 @@ namespace BaseProject.Test.Controllers
             var model = new SignInVM
             {
                 Email = "test@test.com.br",
-                Password = StringExtensions.RandomPassword(8),
+                Password = TextExtensions.RandomPassword(8),
             };
 
             var actionResult = await _accountController.SignIn(model);
@@ -186,7 +186,7 @@ namespace BaseProject.Test.Controllers
             var model = new SignInVM
             {
                 Email = "test@test.com.br",
-                Password = StringExtensions.RandomPassword(8),
+                Password = TextExtensions.RandomPassword(8),
             };
 
             var user = ModelsMock.CreateAspNetUser();
@@ -211,7 +211,7 @@ namespace BaseProject.Test.Controllers
             var model = new SignInVM
             {
                 Email = "test@test.com.br",
-                Password = StringExtensions.RandomPassword(8),
+                Password = TextExtensions.RandomPassword(8),
             };
 
             var user = ModelsMock.CreateAspNetUser();
@@ -237,7 +237,7 @@ namespace BaseProject.Test.Controllers
             var model = new SignInVM
             {
                 Email = "test@test.com.br",
-                Password = StringExtensions.RandomPassword(8),
+                Password = TextExtensions.RandomPassword(8),
             };
 
             var user = ModelsMock.CreateAspNetUser();
@@ -264,7 +264,7 @@ namespace BaseProject.Test.Controllers
             var model = new SignInVM
             {
                 Email = "test@test.com.br",
-                Password = StringExtensions.RandomPassword(8),
+                Password = TextExtensions.RandomPassword(8),
             };
 
             var user = ModelsMock.CreateAspNetUser();
@@ -292,7 +292,7 @@ namespace BaseProject.Test.Controllers
             var model = new SignInVM
             {
                 Email = "test@test.com.br",
-                Password = StringExtensions.RandomPassword(8),
+                Password = TextExtensions.RandomPassword(8),
             };
 
             var user = ModelsMock.CreateAspNetUser();
@@ -322,7 +322,7 @@ namespace BaseProject.Test.Controllers
             var model = new SignInVM
             {
                 Email = "test@test.com.br",
-                Password = StringExtensions.RandomPassword(8),
+                Password = TextExtensions.RandomPassword(8),
             };
 
             var user = ModelsMock.CreateAspNetUser();
@@ -570,7 +570,7 @@ namespace BaseProject.Test.Controllers
         [Fact]
         public async Task ResetPassword_ErroUsuarioNaoEncontrado()
         {
-            var password = StringExtensions.RandomPassword(8);
+            var password = TextExtensions.RandomPassword(8);
 
             var model = new ResetPasswordVM
             {
@@ -591,7 +591,7 @@ namespace BaseProject.Test.Controllers
         [Fact]
         public async Task ResetPassword_ErroRedefinirSenha()
         {
-            var password = StringExtensions.RandomPassword(8);
+            var password = TextExtensions.RandomPassword(8);
 
             var model = new ResetPasswordVM
             {
@@ -617,7 +617,7 @@ namespace BaseProject.Test.Controllers
         [Fact]
         public async Task ResetPassword_SucessoRedefinirSenha()
         {
-            var password = StringExtensions.RandomPassword(8);
+            var password = TextExtensions.RandomPassword(8);
 
             var model = new ResetPasswordVM
             {
@@ -734,8 +734,8 @@ namespace BaseProject.Test.Controllers
         [Fact]
         public async Task ChangePassword_ErroSenhaAtualIncorreta()
         {
-            var currentPassword = StringExtensions.RandomPassword(8);
-            var newPassword = StringExtensions.RandomPassword(8);
+            var currentPassword = TextExtensions.RandomPassword(8);
+            var newPassword = TextExtensions.RandomPassword(8);
 
             var model = new ChangePasswordVM
             {
@@ -760,8 +760,8 @@ namespace BaseProject.Test.Controllers
         [Fact]
         public async Task ChangePassword_ErroEditarSenha()
         {
-            var currentPassword = StringExtensions.RandomPassword(8);
-            var newPassword = StringExtensions.RandomPassword(8);
+            var currentPassword = TextExtensions.RandomPassword(8);
+            var newPassword = TextExtensions.RandomPassword(8);
 
             var model = new ChangePasswordVM
             {
@@ -787,8 +787,8 @@ namespace BaseProject.Test.Controllers
         [Fact]
         public async Task ChangePassword_SucessoEditarSenha()
         {
-            var currentPassword = StringExtensions.RandomPassword(8);
-            var newPassword = StringExtensions.RandomPassword(8);
+            var currentPassword = TextExtensions.RandomPassword(8);
+            var newPassword = TextExtensions.RandomPassword(8);
 
             var model = new ChangePasswordVM
             {

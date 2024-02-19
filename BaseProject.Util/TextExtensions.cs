@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BaseProject.Util
 {
-	public static class StringExtensions
+	public static class TextExtensions
     {
         public static string[] Abreviatte(this string nome)
         {

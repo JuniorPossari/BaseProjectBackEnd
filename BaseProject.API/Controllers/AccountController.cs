@@ -303,7 +303,7 @@ namespace BaseProject.API.Controllers
             twoStepsVM = new TwoStepsVM
             {
                 UserName = user.UserName.ToLower(),
-                Code = StringExtensions.RandomNumber(6)
+                Code = TextExtensions.RandomNumber(6)
             };
 
             _memoryCache.Set(user.UserName.ToLower(), twoStepsVM, new MemoryCacheEntryOptions
@@ -389,7 +389,7 @@ namespace BaseProject.API.Controllers
 			twoStepsVM = new TwoStepsVM
             {
                 UserName = user.UserName.ToLower(),
-                Code = StringExtensions.RandomNumber(6)
+                Code = TextExtensions.RandomNumber(6)
             };
 
             _memoryCache.Set(user.UserName.ToLower(), twoStepsVM, new MemoryCacheEntryOptions

@@ -12,8 +12,6 @@ namespace BaseProject.DAO.Service
         private readonly IWebHostEnvironment _env;
         private readonly string _url = "Coloque a url aqui";
 
-        public ServiceTeamsNotification() { }
-
         public ServiceTeamsNotification(
             IHttpClientFactory clientFactory,
             ILogger<ServiceTeamsNotification> logger,
@@ -41,30 +39,10 @@ namespace BaseProject.DAO.Service
 
 				_logger.LogError(new Exception("Falha na requisição ao tentar enviar notificação ao Teams!"), $"Título: {title}; Mensagem {message};");
 				return false;
-
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				_logger.LogError(e, $"Falha ao enviar notificação ao Teams! Título: {title}; Mensagem {message};");
-				return false;
-			}
-		}
-
-		public async Task<bool> SendNotificationAsync(string title, string message)
-		{
-			try
-			{
-				using var client = new HttpClient();
-
-				var response = await client.PostAsync(_url, new StringContent("{'title': '" + title + "', 'textFormat': 'markdown', 'text': '" + message + "'}", Encoding.UTF8, "application/json"));
-
-				if (response.IsSuccessStatusCode) return true;
-
-				return false;
-
-			}
-			catch (Exception e)
-			{
+				_logger.LogError(ex, $"Falha ao enviar notificação ao Teams! Título: {title}; Mensagem {message};");
 				return false;
 			}
 		}

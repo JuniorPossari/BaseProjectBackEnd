@@ -4,11 +4,8 @@ using BaseProject.DAO.Models;
 
 namespace BaseProject.DAO.Repository
 {
-	public class RepositoryEmpresa : Repository<Empresa, ApplicationDbContext>, IRepositoryEmpresa
+	public class RepositoryEmpresa : Repository<Empresa>, IRepositoryEmpresa
     {
-        public RepositoryEmpresa() : base() { }
-
         public RepositoryEmpresa(ApplicationDbContext context) : base(context) { }
-
     }
 }

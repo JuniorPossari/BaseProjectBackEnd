@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BaseProject.DAO.Models.Views
 {
-	public class DownloadVM
+	public class ProcessoVM
 	{
         public int Id { get; set; }
         public int IdUsuario { get; set; }
@@ -18,17 +18,17 @@ namespace BaseProject.DAO.Models.Views
         public DateTime? DataFinal { get; set; }
         public string DataFinalString { get; set; }
 
-        public DownloadVM() { }
+        public ProcessoVM() { }
 
-        public DownloadVM(Download model)
+        public ProcessoVM(Processo model)
         {
             Id = model.Id;
             IdUsuario = model.IdUsuario;
             Tipo = model.Tipo;
-            TipoString = ((EnumDownloadTipo)model.Tipo).GetEnumDisplayName();
+            TipoString = ((EnumProcessoTipo)model.Tipo).GetDisplayName();
             Status = model.Status;
-            StatusString = ((EnumTaskStatus)model.Status).GetEnumDisplayName();
-            StatusColor = ((EnumTaskStatus)model.Status).GetEnumDescription();
+            StatusString = ((EnumProcessoStatus)model.Status).GetDisplayName();
+            StatusColor = ((EnumProcessoStatus)model.Status).GetDisplayDescription();
             DataInicial = model.DataInicial;
             DataInicialString = model.DataInicial.ToString("dd/MM/yyyy HH:mm:ss");
             DataFinal = model.DataFinal;

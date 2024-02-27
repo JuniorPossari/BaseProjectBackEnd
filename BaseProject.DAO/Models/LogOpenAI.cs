@@ -6,27 +6,36 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace BaseProject.DAO.Models
-{
-    [Index("IdUsuario", Name = "IX_LogOpenAI_IdUsuario")]
-    public partial class LogOpenAI
-    {
-        [Key]
-        public int Id { get; set; }
-        public bool Success { get; set; }
-        public string Exception { get; set; }
-        public byte ReqMethod { get; set; }
-        [Required]
-        public string ReqURL { get; set; }
-        public DateTime ReqDate { get; set; }
-        public string ReqContent { get; set; }
-        public int? RespStatusCode { get; set; }
-        public DateTime? RespDate { get; set; }
-        public string RespContent { get; set; }
-        public int? IdUsuario { get; set; }
+namespace BaseProject.DAO.Models;
 
-        [ForeignKey("IdUsuario")]
-        [InverseProperty("LogOpenAI")]
-        public virtual Usuario IdUsuarioNavigation { get; set; }
-    }
+[Index("IdUsuario", Name = "IX_LogOpenAI_IdUsuario")]
+public partial class LogOpenAI
+{
+    [Key]
+    public int Id { get; set; }
+
+    public bool Success { get; set; }
+
+    public string Exception { get; set; }
+
+    public byte ReqMethod { get; set; }
+
+    [Required]
+    public string ReqURL { get; set; }
+
+    public DateTime ReqDate { get; set; }
+
+    public string ReqContent { get; set; }
+
+    public int? RespStatusCode { get; set; }
+
+    public DateTime? RespDate { get; set; }
+
+    public string RespContent { get; set; }
+
+    public int? IdUsuario { get; set; }
+
+    [ForeignKey("IdUsuario")]
+    [InverseProperty("LogOpenAI")]
+    public virtual Usuario IdUsuarioNavigation { get; set; }
 }

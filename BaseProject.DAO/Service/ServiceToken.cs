@@ -35,30 +35,6 @@ namespace BaseProject.DAO.Service
             _config = config;
         }
 
-        public DateTime GetExpiryTimestamp(string accessToken)
-        {
-            try
-            {
-                IJwtValidator _validator = new JwtValidator(_serializer, _provider);
-                IJwtDecoder decoder = new JwtDecoder(_serializer, _validator, _urlEncoder, _algorithm);
-                var token = decoder.DecodeToObject<JwtToken>(accessToken);
-                DateTimeOffset dateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(token.exp);
-                return dateTimeOffset.LocalDateTime;
-            }
-            catch (TokenExpiredException)
-            {
-                return DateTime.MinValue;
-            }
-            catch (SignatureVerificationException)
-            {
-                return DateTime.MinValue;
-            }
-            catch (Exception e)
-            {
-                return DateTime.MinValue;
-            }
-        }
-
         public string GenerateToken(AspNetUser user, List<string> currentRoles)
         {
             var tokenHandler = new JwtSecurityTokenHandler();

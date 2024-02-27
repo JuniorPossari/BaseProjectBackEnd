@@ -35,8 +35,7 @@ namespace BaseProject.Test.Mocks
             var empresa = _fixture.Build<Empresa>()
                 .Without(x => x.IdRepresentanteNavigation)
                 .Without(x => x.EmpresaLogo)
-                .Without(x => x.Download)
-                .Without(x => x.Upload)
+                .Without(x => x.Processo)
                 .Without(x => x.UsuarioIdEmpresaNavigation)
                 .Without(x => x.UsuarioIdEmpresaSelecionadaNavigation)
                 .Create();
@@ -49,8 +48,7 @@ namespace BaseProject.Test.Mocks
             return _fixture.Build<Empresa>()
                 .Without(x => x.IdRepresentanteNavigation)
                 .Without(x => x.EmpresaLogo)
-                .Without(x => x.Download)
-                .Without(x => x.Upload)
+                .Without(x => x.Processo)
                 .Without(x => x.UsuarioIdEmpresaNavigation)
                 .Without(x => x.UsuarioIdEmpresaSelecionadaNavigation)
                 .CreateMany(numberOfEntitiesToCreate).ToArray();
@@ -59,14 +57,13 @@ namespace BaseProject.Test.Mocks
         public static Usuario CreateUsuario()
         {
             var usuario = _fixture.Build<Usuario>()
-                .Without(x => x.Download)
                 .Without(x => x.Empresa)
                 .Without(x => x.IdAspNetUserNavigation)
                 .Without(x => x.IdEmpresaNavigation)
                 .Without(x => x.IdEmpresaSelecionadaNavigation)
                 .Without(x => x.LogAcessoUsuario)
                 .Without(x => x.LogOpenAI)
-                .Without(x => x.Upload)
+                .Without(x => x.Processo)
                 .Without(x => x.UsuarioFoto)
                 .Create();
 
@@ -78,14 +75,13 @@ namespace BaseProject.Test.Mocks
         public static Usuario[] CreateManyUsuario(int numberOfEntitiesToCreate = 10)
         {
             return _fixture.Build<Usuario>()
-                .Without(x => x.Download)
                 .Without(x => x.Empresa)
                 .Without(x => x.IdAspNetUserNavigation)
                 .Without(x => x.IdEmpresaNavigation)
                 .Without(x => x.IdEmpresaSelecionadaNavigation)
                 .Without(x => x.LogAcessoUsuario)
                 .Without(x => x.LogOpenAI)
-                .Without(x => x.Upload)
+                .Without(x => x.Processo)
                 .Without(x => x.UsuarioFoto)
                 .CreateMany(numberOfEntitiesToCreate).ToArray();
         }

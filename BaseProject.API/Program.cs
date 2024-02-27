@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
-using System.Net;
 using WkHtmlToPdfDotNet;
 using WkHtmlToPdfDotNet.Contracts;
 using Microsoft.AspNetCore.Localization;
@@ -43,25 +42,24 @@ services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools
 //services.AddScoped<IServiceBusSender, ServiceBusSender>();
 
 //API OpenAI
-services.AddScoped<IServiceOpenAI, ServiceOpenAI>();
-
-//API Localidade
-services.AddScoped<IServiceLocalidade, ServiceLocalidade>();
+//services.AddScoped<IServiceOpenAI, ServiceOpenAI>();
 
 //Notification
-services.AddScoped<IServiceEmail, ServiceEmail>();
-services.AddScoped<IServiceTeamsNotification, ServiceTeamsNotification>();
+//services.AddScoped<IServiceEmail, ServiceEmail>();
+//services.AddScoped<IServiceTeamsNotification, ServiceTeamsNotification>();
 
 //Autentication
 services.AddScoped<IServiceToken, ServiceToken>();
 
+//Azure Speech SDK
+//services.AddScoped<IServiceSpeech, ServiceSpeech>();
+
 #endregion
 
 services.AddScoped<IServiceAspNetUser, ServiceAspNetUser>();
-services.AddScoped<IServiceDownload, ServiceDownload>();
 services.AddScoped<IServiceEmpresa, ServiceEmpresa>();
 services.AddScoped<IServiceLogAcessoUsuario, ServiceLogAcessoUsuario>();
-services.AddScoped<IServiceUpload, ServiceUpload>();
+services.AddScoped<IServiceProcesso, ServiceProcesso>();
 services.AddScoped<IServiceUsuario, ServiceUsuario>();
 
 #endregion
@@ -69,10 +67,9 @@ services.AddScoped<IServiceUsuario, ServiceUsuario>();
 #region Repository
 
 services.AddScoped<IRepositoryAspNetUser, RepositoryAspNetUser>();
-services.AddScoped<IRepositoryDownload, RepositoryDownload>();
 services.AddScoped<IRepositoryEmpresa, RepositoryEmpresa>();
 services.AddScoped<IRepositoryLogAcessoUsuario, RepositoryLogAcessoUsuario>();
-services.AddScoped<IRepositoryUpload, RepositoryUpload>();
+services.AddScoped<IRepositoryProcesso, RepositoryProcesso>();
 services.AddScoped<IRepositoryUsuario, RepositoryUsuario>();
 
 #endregion

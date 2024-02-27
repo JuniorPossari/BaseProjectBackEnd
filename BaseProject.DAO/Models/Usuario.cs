@@ -6,67 +6,72 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace BaseProject.DAO.Models
+namespace BaseProject.DAO.Models;
+
+[Index("Email", Name = "IX_Usuario_Email", IsUnique = true)]
+[Index("IdAspNetUser", Name = "IX_Usuario_IdAspNetUser", IsUnique = true)]
+[Index("IdEmpresa", Name = "IX_Usuario_IdEmpresa")]
+[Index("IdEmpresaSelecionada", Name = "IX_Usuario_IdEmpresaSelecionada")]
+public partial class Usuario
 {
-    [Index("Email", Name = "IX_Usuario_Email", IsUnique = true)]
-    [Index("IdAspNetUser", Name = "IX_Usuario_IdAspNetUser", IsUnique = true)]
-    [Index("IdEmpresa", Name = "IX_Usuario_IdEmpresa")]
-    [Index("IdEmpresaSelecionada", Name = "IX_Usuario_IdEmpresaSelecionada")]
-    public partial class Usuario
-    {
-        public Usuario()
-        {
-            Download = new HashSet<Download>();
-            Empresa = new HashSet<Empresa>();
-            LogAcessoUsuario = new HashSet<LogAcessoUsuario>();
-            LogOpenAI = new HashSet<LogOpenAI>();
-            Upload = new HashSet<Upload>();
-        }
+    [Key]
+    public int Id { get; set; }
 
-        [Key]
-        public int Id { get; set; }
-        [Required]
-        public string IdAspNetUser { get; set; }
-        public int IdEmpresa { get; set; }
-        [Required]
-        [StringLength(150)]
-        public string Nome { get; set; }
-        [Required]
-        [StringLength(150)]
-        public string Email { get; set; }
-        [StringLength(11)]
-        [Unicode(false)]
-        public string CPF { get; set; }
-        [Required]
-        public string Senha { get; set; }
-        public DateTime DataCadastro { get; set; }
-        public bool Ativo { get; set; }
-        [StringLength(150)]
-        public string Sobrenome { get; set; }
-        public bool PrimeiroAcesso { get; set; }
-        public int? IdEmpresaSelecionada { get; set; }
+    [Required]
+    public string IdAspNetUser { get; set; }
 
-        [ForeignKey("IdEmpresa")]
-        [InverseProperty("UsuarioIdEmpresaNavigation")]
-        public virtual Empresa IdEmpresaNavigation { get; set; }
-        [ForeignKey("IdEmpresaSelecionada")]
-        [InverseProperty("UsuarioIdEmpresaSelecionadaNavigation")]
-        public virtual Empresa IdEmpresaSelecionadaNavigation { get; set; }
-        [InverseProperty("IdUsuarioNavigation")]
-        public virtual UsuarioFoto UsuarioFoto { get; set; }
-        [InverseProperty("IdUsuarioNavigation")]
-        public virtual ICollection<Download> Download { get; set; }
-        [InverseProperty("IdRepresentanteNavigation")]
-        public virtual ICollection<Empresa> Empresa { get; set; }
-        [InverseProperty("IdUsuarioNavigation")]
-        public virtual ICollection<LogAcessoUsuario> LogAcessoUsuario { get; set; }
-        [InverseProperty("IdUsuarioNavigation")]
-        public virtual ICollection<LogOpenAI> LogOpenAI { get; set; }
-        [InverseProperty("IdUsuarioNavigation")]
-        public virtual ICollection<Upload> Upload { get; set; }
+    public int IdEmpresa { get; set; }
 
-        [ForeignKey("IdAspNetUser")]
-        [InverseProperty("Usuario")]
-        public virtual AspNetUser IdAspNetUserNavigation { get; set; }
-    }
+    [Required]
+    [StringLength(150)]
+    public string Nome { get; set; }
+
+    [Required]
+    [StringLength(150)]
+    public string Email { get; set; }
+
+    [StringLength(11)]
+    [Unicode(false)]
+    public string CPF { get; set; }
+
+    [Required]
+    public string Senha { get; set; }
+
+    public DateTime DataCadastro { get; set; }
+
+    public bool Ativo { get; set; }
+
+    [StringLength(150)]
+    public string Sobrenome { get; set; }
+
+    public bool PrimeiroAcesso { get; set; }
+
+    public int? IdEmpresaSelecionada { get; set; }
+
+    [InverseProperty("IdRepresentanteNavigation")]
+    public virtual ICollection<Empresa> Empresa { get; set; } = new List<Empresa>();
+
+    [ForeignKey("IdEmpresa")]
+    [InverseProperty("UsuarioIdEmpresaNavigation")]
+    public virtual Empresa IdEmpresaNavigation { get; set; }
+
+    [ForeignKey("IdEmpresaSelecionada")]
+    [InverseProperty("UsuarioIdEmpresaSelecionadaNavigation")]
+    public virtual Empresa IdEmpresaSelecionadaNavigation { get; set; }
+
+    [InverseProperty("IdUsuarioNavigation")]
+    public virtual ICollection<LogAcessoUsuario> LogAcessoUsuario { get; set; } = new List<LogAcessoUsuario>();
+
+    [InverseProperty("IdUsuarioNavigation")]
+    public virtual ICollection<LogOpenAI> LogOpenAI { get; set; } = new List<LogOpenAI>();
+
+	[InverseProperty("IdUsuarioNavigation")]
+    public virtual ICollection<Processo> Processo { get; set; } = new List<Processo>();
+
+    [InverseProperty("IdUsuarioNavigation")]
+    public virtual UsuarioFoto UsuarioFoto { get; set; }
+
+	[ForeignKey("IdAspNetUser")]
+	[InverseProperty("Usuario")]
+	public virtual AspNetUser IdAspNetUserNavigation { get; set; }
 }

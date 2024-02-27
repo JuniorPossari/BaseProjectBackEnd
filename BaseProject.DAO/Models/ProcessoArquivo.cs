@@ -8,10 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BaseProject.DAO.Models;
 
-public partial class EmpresaLogo
+public partial class ProcessoArquivo
 {
     [Key]
-    public int IdEmpresa { get; set; }
+    public int IdProcesso { get; set; }
 
     [Required]
     [StringLength(255)]
@@ -30,7 +30,7 @@ public partial class EmpresaLogo
     [Required]
     public string Base64 { get; set; }
 
-    [ForeignKey("IdEmpresa")]
-    [InverseProperty("EmpresaLogo")]
-    public virtual Empresa IdEmpresaNavigation { get; set; }
+    [ForeignKey("IdProcesso")]
+    [InverseProperty("ProcessoArquivo")]
+    public virtual Processo IdProcessoNavigation { get; set; }
 }

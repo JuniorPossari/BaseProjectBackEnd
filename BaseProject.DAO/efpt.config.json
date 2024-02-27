@@ -1,5 +1,5 @@
 ﻿{
-   "CodeGenerationMode": 2,
+   "CodeGenerationMode": 4,
    "ContextClassName": "ApplicationDbContext",
    "ContextNamespace": null,
    "DefaultDacpacSchema": null,
@@ -14,23 +14,15 @@
    "SelectedHandlebarsLanguage": 0,
    "SelectedToBeGenerated": 0,
    "T4TemplatePath": null,
-   "Tables": [      
-      {
-         "Name": "[dbo].[Download]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[DownloadArquivo]",
-         "ObjectType": 0
-      },
+   "Tables": [
       {
          "Name": "[dbo].[Empresa]",
          "ObjectType": 0
-      },      
+      },
       {
          "Name": "[dbo].[EmpresaLogo]",
          "ObjectType": 0
-      },      
+      },
       {
          "Name": "[dbo].[Log]",
          "ObjectType": 0
@@ -38,17 +30,17 @@
       {
          "Name": "[dbo].[LogAcessoUsuario]",
          "ObjectType": 0
-      },      
+      },
       {
          "Name": "[dbo].[LogOpenAI]",
          "ObjectType": 0
-      },      
+      },
       {
-         "Name": "[dbo].[Upload]",
+         "Name": "[dbo].[Processo]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[UploadArquivo]",
+         "Name": "[dbo].[ProcessoArquivo]",
          "ObjectType": 0
       },
       {
@@ -60,12 +52,13 @@
          "ObjectType": 0
       }
    ],
-   "UiHint": "(localdb)\\MSSQLLocalDB.BaseProject_Dev",
+   "UiHint": "(localdb)\\mssqllocaldb.BaseProject_Dev",
    "UncountableWords": null,
    "UseBoolPropertiesWithoutDefaultSql": true,
    "UseDatabaseNames": true,
    "UseDateOnlyTimeOnly": false,
    "UseDbContextSplitting": false,
+   "UseDecimalDataAnnotationForSprocResult": true,
    "UseFluentApiOnly": false,
    "UseHandleBars": false,
    "UseHierarchyId": false,
@@ -77,6 +70,7 @@
    "UseNoObjectFilter": false,
    "UseNodaTime": false,
    "UseNullableReferences": false,
+   "UsePrefixNavigationNaming": false,
    "UseSchemaFolders": false,
    "UseSchemaNamespaces": false,
    "UseSpatial": false,

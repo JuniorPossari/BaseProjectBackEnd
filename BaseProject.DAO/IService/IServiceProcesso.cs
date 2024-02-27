@@ -5,9 +5,9 @@ using BaseProject.DAO.Models.Views;
 
 namespace BaseProject.DAO.IService
 {
-	public interface IServiceDownload : IService<Download>
+	public interface IServiceProcesso : IService<Processo>
     {
         bool Processando(int idEmpresa, byte? tipo = null);
-        DTResult<DownloadVM> Listar(DTParam<DownloadFM> param, int idEmpresa);
+        DTResult<ProcessoVM> Listar(DTParam<ProcessoFM> param, int idEmpresa);
     }
 }

@@ -4,7 +4,6 @@ namespace BaseProject.DAO.IService
 {
 	public interface IServiceToken
     {
-        DateTime GetExpiryTimestamp(string accessToken);
         string GenerateToken(AspNetUser user, List<string> currentRoles);
     }
 }

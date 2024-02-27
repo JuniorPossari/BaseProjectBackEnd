@@ -1,9 +1,8 @@
-﻿using BaseProject.DAO.Data;
-using BaseProject.DAO.Models;
+﻿using BaseProject.DAO.Models;
 
 namespace BaseProject.DAO.IRepository
 {
-	public interface IRepositoryEmpresa : IRepository<Empresa, ApplicationDbContext>
+	public interface IRepositoryEmpresa : IRepository<Empresa>
     {
 
     }

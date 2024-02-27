@@ -11,18 +11,21 @@ namespace BaseProject.API.Controllers
 	{
 		private UserManager<AspNetUser> _userManager;
 		private RoleManager<IdentityRole> _roleManager;
+		private readonly ILogger<DashboardController> _logger;
 		private readonly IServiceUsuario _serviceUsuario;
 		private readonly IServiceEmpresa _serviceEmpresa;
 
 		public DashboardController(
 			UserManager<AspNetUser> userManager,
 			RoleManager<IdentityRole> roleManager,
+			ILogger<DashboardController> logger,
 			IServiceUsuario serviceUsuario,
 			IServiceEmpresa serviceEmpresa
 		)
 		{
 			_userManager = userManager;
 			_roleManager = roleManager;
+			_logger = logger;
 			_serviceUsuario = serviceUsuario;
 			_serviceEmpresa = serviceEmpresa;
 		}
@@ -89,9 +92,10 @@ namespace BaseProject.API.Controllers
                 return Ok("Server is running...");
 
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return Ok($"ATENÇÃO: Houve um erro ao adicionar/editar as permissões, empresa principal ou usuário admin! ({e.InnerException?.Message ?? e.Message})");
+				_logger.LogError(ex, ex.InnerException?.Message ?? ex.Message);
+				return Ok($"ATENÇÃO: Houve um erro ao adicionar/editar as permissões, empresa principal ou usuário admin! ({ex.InnerException?.Message ?? ex.Message})");
             }
 		}
 
@@ -118,9 +122,10 @@ namespace BaseProject.API.Controllers
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                sucesso = false;
+				_logger.LogError(ex, ex.InnerException?.Message ?? ex.Message);
+				sucesso = false;
             }
 
             return sucesso;
@@ -143,9 +148,10 @@ namespace BaseProject.API.Controllers
 
                 if (!empresaExists) sucesso = _serviceEmpresa.Adicionar(empresa);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                sucesso = false;
+				_logger.LogError(ex, ex.InnerException?.Message ?? ex.Message);
+				sucesso = false;
             }
 
             return sucesso;

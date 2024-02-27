@@ -7,10 +7,12 @@ using WkHtmlToPdfDotNet.Contracts;
 using BaseProject.Util;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Hosting;
+using System.Diagnostics;
 
 namespace BaseProject.API.Controllers
 {
-    [Authorize]
+    [AllowAnonymous]
 	[Route("[controller]")]
 	public class HelpController : Controller
 	{
@@ -35,9 +37,12 @@ namespace BaseProject.API.Controllers
 			_webHostEnvironment = webHostEnvironment;
 		}
 
+		[Authorize]
 		[HttpGet("ExemploObterDadosDoUsuarioLogado")]
 		public IActionResult ExemploObterDadosDoUsuarioLogado()
 		{
+			if (!_webHostEnvironment.IsDevelopment()) return NotFound();
+
 			//Para testar acesse https://localhost:44301/Help/ExemploObterDadosDoUsuarioLogado
 			//Só deve ser usado em métodos ou controllers com [Authorize] (Quando o usuário está logado)
 			var idAspNetUser = User.FindFirstValue("IdAspNetUser");
@@ -54,6 +59,8 @@ namespace BaseProject.API.Controllers
 		[HttpGet("ExemploEnviarEmail")]
 		public async Task<IActionResult> ExemploEnviarEmail()
 		{
+			if (!_webHostEnvironment.IsDevelopment()) return NotFound();
+
 			//Preencha os dados e acesse https://localhost:44301/Help/ExemploEnviarEmail
 			var emailOptions = new EmailOptions
 			{
@@ -77,6 +84,8 @@ namespace BaseProject.API.Controllers
 		[HttpGet("ExemploDownloadExcel")]
 		public IActionResult ExemploDownloadExcel()
 		{
+			if (!_webHostEnvironment.IsDevelopment()) return NotFound();
+
 			//Para baixar o exemplo acesse https://localhost:44301/Help/ExemploDownloadExcel
 			var workbook = new XLWorkbook();
 			var worksheet = workbook.Worksheets.Add("Usuários");
@@ -138,6 +147,8 @@ namespace BaseProject.API.Controllers
 		[HttpGet("ExemploDownloadPDF")]
 		public async Task<IActionResult> ExemploDownloadPDF()
 		{
+			if (!_webHostEnvironment.IsDevelopment()) return NotFound();
+
 			//Para baixar o exemplo acesse https://localhost:44301/Help/ExemploDownloadPDF
 			var usuarios = _serviceUsuario.ObterTodos();
 
@@ -177,5 +188,35 @@ namespace BaseProject.API.Controllers
 			return file;
 		}
 
+		[HttpGet("ExemploUtilizarServicoEmMetodoAsincrono")]
+		public IActionResult ExemploUtilizarServicoEmMetodoAsincrono([FromServices] IServiceScopeFactory serviceScopeFactory)
+		{
+			if (!_webHostEnvironment.IsDevelopment()) return NotFound();
+
+			//Para testar acesse https://localhost:44301/Help/ExemploUtilizarServicoEmMetodoAsincrono
+
+			Task.Run(async () =>
+			{
+				//Tudo dentro do Task.Run pode ser feito um método separado que será chamado aqui
+
+				await Task.Delay(10000);
+
+				//Primeiro é criado um scope utilizando IServiceScopeFactory 
+				using var scope = serviceScopeFactory.CreateScope();
+
+				//Agora utilizamos o ServiceProvider para obter os services que serão usados no método
+				var serviceUsuario = scope.ServiceProvider.GetRequiredService<IServiceUsuario>(); 
+
+				var usuario = serviceUsuario.ObterPorId(1); //Nesse ponto, se estivesse utilizando um service normal chamado no construtor da controller já retornaria um erro (Cannot access a disposed object...)
+
+				var dataHoraProcessoFinalizado = DateTime.Now.ToBrasiliaTime().ToString("dd/MM/yyyy HH:mm:ss");
+
+				Debug.WriteLine($"Hora que o processo foi finalizado: {DateTime.Now.ToBrasiliaTime():dd/MM/yyyy HH:mm:ss}"); //Veja na janela de Saída (Output)
+			});
+
+			Debug.WriteLine($"Hora que a requisição foi retornada: {DateTime.Now.ToBrasiliaTime():dd/MM/yyyy HH:mm:ss}"); //Veja na janela de Saída (Output)
+
+			return Ok();
+		}
 	}
 }

@@ -6,11 +6,11 @@
         public string Message { get; set; }
         public string StackTrace { get; set; }
 
-        public ErrorResponse(Exception e)
+        public ErrorResponse(Exception ex)
         {
-            Type = e.GetType().Name;
-            Message = e.Message;
-            StackTrace = e.ToString();
+            Type = ex.GetType().Name;
+            Message = ex.Message;
+            StackTrace = ex.ToString();
         }
     }
 }

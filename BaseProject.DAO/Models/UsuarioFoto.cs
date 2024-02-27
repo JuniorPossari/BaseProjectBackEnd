@@ -6,27 +6,31 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace BaseProject.DAO.Models
-{
-    public partial class UsuarioFoto
-    {
-        [Key]
-        public int IdUsuario { get; set; }
-        [Required]
-        [StringLength(255)]
-        public string Nome { get; set; }
-        [Required]
-        [StringLength(10)]
-        public string Extensao { get; set; }
-        public int Tamanho { get; set; }
-        [Required]
-        [StringLength(255)]
-        public string Tipo { get; set; }
-        [Required]
-        public string Base64 { get; set; }
+namespace BaseProject.DAO.Models;
 
-        [ForeignKey("IdUsuario")]
-        [InverseProperty("UsuarioFoto")]
-        public virtual Usuario IdUsuarioNavigation { get; set; }
-    }
+public partial class UsuarioFoto
+{
+    [Key]
+    public int IdUsuario { get; set; }
+
+    [Required]
+    [StringLength(255)]
+    public string Nome { get; set; }
+
+    [Required]
+    [StringLength(10)]
+    public string Extensao { get; set; }
+
+    public int Tamanho { get; set; }
+
+    [Required]
+    [StringLength(255)]
+    public string Tipo { get; set; }
+
+    [Required]
+    public string Base64 { get; set; }
+
+    [ForeignKey("IdUsuario")]
+    [InverseProperty("UsuarioFoto")]
+    public virtual Usuario IdUsuarioNavigation { get; set; }
 }

@@ -4,11 +4,13 @@
 
 namespace BaseProject.DAO.Migrations
 {
-    public partial class ProcLimparLogs : Migration
+    /// <inheritdoc />
+    public partial class AddProcLimparLogs : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            var sql = @"
+			var sql = @"
                 CREATE OR ALTER PROCEDURE LimparLogs (@N INT)
                 AS
                 BEGIN
@@ -17,9 +19,10 @@ namespace BaseProject.DAO.Migrations
                 END
             ";
 
-            migrationBuilder.Sql(sql);
-        }
+			migrationBuilder.Sql(sql);
+		}
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
 

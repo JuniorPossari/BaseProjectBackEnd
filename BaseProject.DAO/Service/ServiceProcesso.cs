@@ -10,62 +10,61 @@ using System.Linq.Expressions;
 
 namespace BaseProject.DAO.Service
 {
-	public class ServiceUpload : IServiceUpload
+	public class ServiceProcesso : IServiceProcesso
     {
-        private readonly IRepositoryUpload _repositoryUpload;
+        private readonly IRepositoryProcesso _repositoryProcesso;
 
-        public ServiceUpload(IRepositoryUpload repositoryUpload)
+        public ServiceProcesso(IRepositoryProcesso repositoryProcesso)
         {
-            _repositoryUpload = repositoryUpload;
+            _repositoryProcesso = repositoryProcesso;
         }
 
-        public Upload ObterPorId(int id, string includeProperties = "")
+        public Processo ObterPorId(int id, string includeProperties = "")
         {
-            return _repositoryUpload.FirstOrDefault(x => x.Id == id, includeProperties);
+            return _repositoryProcesso.FirstOrDefault(x => x.Id == id, includeProperties);
         }
 
-        public Upload[] ObterTodos(string includeProperties = "", bool noTracking = true)
+        public Processo[] ObterTodos(string includeProperties = "", bool noTracking = true)
         {
-            return _repositoryUpload.Get(includeProperties: includeProperties, noTracking: noTracking);
+            return _repositoryProcesso.Get(includeProperties: includeProperties, noTracking: noTracking);
         }
 
         public bool Processando(int idEmpresa, byte? tipo = null)
         {
-            if (tipo.HasValue) return _repositoryUpload.Exists(x => x.IdEmpresa == idEmpresa && x.Tipo == tipo.Value && x.Status == (byte)EnumTaskStatus.Processando);
+            if (tipo.HasValue) return _repositoryProcesso.Exists(x => x.IdEmpresa == idEmpresa && x.Tipo == tipo.Value && x.Status == (byte)EnumProcessoStatus.Processando);
 
-            return _repositoryUpload.Exists(x => x.IdEmpresa == idEmpresa && x.Status == (byte)EnumTaskStatus.Processando);
+            return _repositoryProcesso.Exists(x => x.IdEmpresa == idEmpresa && x.Status == (byte)EnumProcessoStatus.Processando);
         }
 
-        public bool Adicionar(Upload entity)
+        public bool Adicionar(Processo entity)
         {
-            return _repositoryUpload.Insert(entity);
+            return _repositoryProcesso.Insert(entity);
         }
 
-        public bool Editar(Upload entity)
+        public bool Editar(Processo entity)
         {
-            return _repositoryUpload.Update(entity);
+            return _repositoryProcesso.Update(entity);
         }
 
         public bool Deletar(int id)
         {
-            return _repositoryUpload.Delete(id);
+            return _repositoryProcesso.Delete(id);
         }
 
-        public DTResult<UploadVM> Listar(DTParam<UploadFM> param, int idEmpresa)
+        public DTResult<ProcessoVM> Listar(DTParam<ProcessoFM> param, int idEmpresa)
         {
-            var query = _repositoryUpload.GetContext().Set<Upload>().AsQueryable();
+            var query = _repositoryProcesso.GetContext().Set<Processo>().AsQueryable();
 
             query = query.Where(x => x.IdEmpresa == idEmpresa);
 
             //Adicione as colunas de texto onde a pesquisa geral será aplicada
-            var search = param.SearchValue();
-            if (!string.IsNullOrEmpty(search)) query = query.Where(x =>
-                x.MD5.Contains(search)
-            );
+            //var search = param.SearchValue();
+            //if (!string.IsNullOrEmpty(search)) query = query.Where(x =>
+            //    x.Nome.Contains(search)
+            //);
 
             //Adicione as colunas ordenáveis e o seu respectivo nome do datatables (É necessário pelo menos uma como padrão)
-            var keyGen = new KeySelectorGenerator<Upload>(param.SortedColumnName());
-            keyGen.AddKeySelector(x => x.MD5, "MD5");
+            var keyGen = new KeySelectorGenerator<Processo>(param.SortedColumnName());
             keyGen.AddKeySelector(x => x.Tipo, "TipoString");
             keyGen.AddKeySelector(x => x.Status, "StatusString");
             keyGen.AddKeySelector(x => x.DataInicial, "DataInicialString");
@@ -85,11 +84,11 @@ namespace BaseProject.DAO.Service
             //Adicione as tabelas relacionadas caso precise
             var includeProperties = "";
 
-            var itens = _repositoryUpload.Filter(query, param.InitialPosition(), param.ItensPerPage(), out int total, includeProperties);
+            var itens = _repositoryProcesso.Filter(query, param.InitialPosition(), param.ItensPerPage(), out int total, includeProperties);
 
-            return new DTResult<UploadVM>
+            return new DTResult<ProcessoVM>
             {
-                Itens = itens.Select(x => new UploadVM(x)).ToArray(),
+                Itens = itens.Select(x => new ProcessoVM(x)).ToArray(),
                 Total = total
             };
         }

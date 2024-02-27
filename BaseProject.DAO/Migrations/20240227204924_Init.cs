@@ -5,8 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BaseProject.DAO.Migrations
 {
+    /// <inheritdoc />
     public partial class Init : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -173,46 +175,6 @@ namespace BaseProject.DAO.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Download",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    IdUsuario = table.Column<int>(type: "int", nullable: false),
-                    Tipo = table.Column<byte>(type: "tinyint", nullable: false),
-                    Status = table.Column<byte>(type: "tinyint", nullable: false),
-                    DataInicial = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DataFinal = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IdEmpresa = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Download", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DownloadArquivo",
-                columns: table => new
-                {
-                    IdDownload = table.Column<int>(type: "int", nullable: false),
-                    Nome = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    Extensao = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    Tamanho = table.Column<int>(type: "int", nullable: false),
-                    Tipo = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    Base64 = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DownloadArquivo", x => x.IdDownload);
-                    table.ForeignKey(
-                        name: "FK_DownloadArquivo_Download",
-                        column: x => x.IdDownload,
-                        principalTable: "Download",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Empresa",
                 columns: table => new
                 {
@@ -345,30 +307,29 @@ namespace BaseProject.DAO.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Upload",
+                name: "Processo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    IdEmpresa = table.Column<int>(type: "int", nullable: false),
                     IdUsuario = table.Column<int>(type: "int", nullable: false),
-                    MD5 = table.Column<string>(type: "char(32)", unicode: false, fixedLength: true, maxLength: 32, nullable: false),
                     Tipo = table.Column<byte>(type: "tinyint", nullable: false),
                     Status = table.Column<byte>(type: "tinyint", nullable: false),
                     DataInicial = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DataFinal = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IdEmpresa = table.Column<int>(type: "int", nullable: false)
+                    DataFinal = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Upload", x => x.Id);
+                    table.PrimaryKey("PK_Processo", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Upload_Empresa",
+                        name: "FK_Processo_Empresa",
                         column: x => x.IdEmpresa,
                         principalTable: "Empresa",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Upload_Usuario",
+                        name: "FK_Processo_Usuario",
                         column: x => x.IdUsuario,
                         principalTable: "Usuario",
                         principalColumn: "Id",
@@ -398,10 +359,10 @@ namespace BaseProject.DAO.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UploadArquivo",
+                name: "ProcessoArquivo",
                 columns: table => new
                 {
-                    IdUpload = table.Column<int>(type: "int", nullable: false),
+                    IdProcesso = table.Column<int>(type: "int", nullable: false),
                     Nome = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Extensao = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     Tamanho = table.Column<int>(type: "int", nullable: false),
@@ -410,11 +371,11 @@ namespace BaseProject.DAO.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UploadArquivo", x => x.IdUpload);
+                    table.PrimaryKey("PK_ProcessoArquivo", x => x.IdProcesso);
                     table.ForeignKey(
-                        name: "FK_UploadArquivo_Upload",
-                        column: x => x.IdUpload,
-                        principalTable: "Upload",
+                        name: "FK_ProcessoArquivo_Processo",
+                        column: x => x.IdProcesso,
+                        principalTable: "Processo",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -459,16 +420,6 @@ namespace BaseProject.DAO.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Download_IdEmpresa",
-                table: "Download",
-                column: "IdEmpresa");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Download_IdUsuario",
-                table: "Download",
-                column: "IdUsuario");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Empresa_IdRepresentante",
                 table: "Empresa",
                 column: "IdRepresentante");
@@ -490,13 +441,13 @@ namespace BaseProject.DAO.Migrations
                 column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Upload_IdEmpresa",
-                table: "Upload",
+                name: "IX_Processo_IdEmpresa",
+                table: "Processo",
                 column: "IdEmpresa");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Upload_IdUsuario",
-                table: "Upload",
+                name: "IX_Processo_IdUsuario",
+                table: "Processo",
                 column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
@@ -522,22 +473,6 @@ namespace BaseProject.DAO.Migrations
                 column: "IdEmpresaSelecionada");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Download_Empresa",
-                table: "Download",
-                column: "IdEmpresa",
-                principalTable: "Empresa",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Download_Usuario",
-                table: "Download",
-                column: "IdUsuario",
-                principalTable: "Usuario",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
                 name: "FK_Empresa_Representante",
                 table: "Empresa",
                 column: "IdRepresentante",
@@ -545,6 +480,7 @@ namespace BaseProject.DAO.Migrations
                 principalColumn: "Id");
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
@@ -552,12 +488,8 @@ namespace BaseProject.DAO.Migrations
                 table: "Usuario");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_Usuario_Empresa",
-                table: "Usuario");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Usuario_EmpresaSelecionada",
-                table: "Usuario");
+                name: "FK_Empresa_Representante",
+                table: "Empresa");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
@@ -575,9 +507,6 @@ namespace BaseProject.DAO.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "DownloadArquivo");
-
-            migrationBuilder.DropTable(
                 name: "EmpresaLogo");
 
             migrationBuilder.DropTable(
@@ -590,7 +519,7 @@ namespace BaseProject.DAO.Migrations
                 name: "LogOpenAI");
 
             migrationBuilder.DropTable(
-                name: "UploadArquivo");
+                name: "ProcessoArquivo");
 
             migrationBuilder.DropTable(
                 name: "UsuarioFoto");
@@ -599,19 +528,16 @@ namespace BaseProject.DAO.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Download");
-
-            migrationBuilder.DropTable(
-                name: "Upload");
+                name: "Processo");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Empresa");
+                name: "Usuario");
 
             migrationBuilder.DropTable(
-                name: "Usuario");
+                name: "Empresa");
         }
     }
 }

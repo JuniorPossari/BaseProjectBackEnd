@@ -4,11 +4,8 @@ using BaseProject.DAO.Models;
 
 namespace BaseProject.DAO.Repository
 {
-	public class RepositoryLogAcessoUsuario : Repository<LogAcessoUsuario, ApplicationDbContext>, IRepositoryLogAcessoUsuario
+	public class RepositoryLogAcessoUsuario : Repository<LogAcessoUsuario>, IRepositoryLogAcessoUsuario
     {
-        public RepositoryLogAcessoUsuario() : base() { }
-
         public RepositoryLogAcessoUsuario(ApplicationDbContext context) : base(context) { }
-
     }
 }

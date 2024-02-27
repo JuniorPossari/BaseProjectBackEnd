@@ -15,6 +15,7 @@ using System.Security.Claims;
 using System.Text;
 using Wangkanai.Detection.Services;
 using Microsoft.AspNetCore.Http;
+using BaseProject.API.Areas.API.Controllers;
 
 namespace BaseProject.API.Controllers
 {
@@ -23,34 +24,35 @@ namespace BaseProject.API.Controllers
     {
         private UserManager<AspNetUser> _userManager;
         private SignInManager<AspNetUser> _signInManager;
-        private readonly IServiceEmail _serviceEmail;
+		private readonly ILogger<AccountController> _logger;
+		private readonly IServiceEmail _serviceEmail;
         private readonly IServiceUsuario _serviceUsuario;
         private readonly IServiceEmpresa _serviceEmpresa;
         private readonly IServiceToken _serviceToken;
         private readonly IDetectionService _detectionService;
         private readonly IServiceLogAcessoUsuario _serviceLogAcessoUsuario;
         private readonly IMemoryCache _memoryCache;
-        private readonly IServiceUpload _serviceUpload;
-        private readonly IServiceDownload _serviceDownload;
+        private readonly IServiceProcesso _serviceProcesso;
         private readonly IServiceAspNetUser _serviceAspNetUser;
 
         public AccountController(
             UserManager<AspNetUser> userManager,
             SignInManager<AspNetUser> signInManager,
-            IServiceEmail serviceEmail,
+			ILogger<AccountController> logger,
+			IServiceEmail serviceEmail,
             IServiceUsuario serviceUsuario,
             IServiceEmpresa serviceEmpresa,
             IServiceToken serviceToken,
             IDetectionService detectionService,
             IServiceLogAcessoUsuario serviceLogAcessoUsuario,
             IMemoryCache memoryCache,
-            IServiceUpload serviceUpload,
-            IServiceDownload serviceDownload,
+            IServiceProcesso serviceProcesso,
             IServiceAspNetUser serviceAspNetUser
         )
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _logger = logger;
             _serviceEmail = serviceEmail;
             _serviceUsuario = serviceUsuario;
             _serviceEmpresa = serviceEmpresa;
@@ -58,8 +60,7 @@ namespace BaseProject.API.Controllers
             _detectionService = detectionService;
             _serviceLogAcessoUsuario = serviceLogAcessoUsuario;
             _memoryCache = memoryCache;
-            _serviceUpload = serviceUpload;
-            _serviceDownload = serviceDownload;
+            _serviceProcesso = serviceProcesso;
             _serviceAspNetUser = serviceAspNetUser;
         }
 
@@ -181,8 +182,9 @@ namespace BaseProject.API.Controllers
 
                 return true;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, ex.InnerException?.Message ?? ex.Message);
                 return false;
             }
 
@@ -423,9 +425,10 @@ namespace BaseProject.API.Controllers
 
                 return sucesso;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return false;
+				_logger.LogError(ex, ex.InnerException?.Message ?? ex.Message);
+				return false;
             }
 
         }
@@ -605,12 +608,12 @@ namespace BaseProject.API.Controllers
         }
 
         [Authorize]
-        [HttpPost("ListarUploads")]
-        public IActionResult ListarUploads([FromBody] DTParam<UploadFM> param)
+        [HttpPost("ListarProcessos")]
+        public IActionResult ListarProcessos([FromBody] DTParam<ProcessoFM> param)
         {
             var idEmpresa = _serviceUsuario.ObterIdEmpresaSelecionada(HttpContext);
             
-            var result = _serviceUpload.Listar(param, idEmpresa);
+            var result = _serviceProcesso.Listar(param, idEmpresa);
 
             return Json(this.CreateResponseObject(true, new
             {
@@ -620,42 +623,14 @@ namespace BaseProject.API.Controllers
         }
 
         [Authorize]
-        [HttpGet("BaixarUploadArquivo")]
-        public IActionResult BaixarUploadArquivo([FromQuery] int id)
+        [HttpGet("BaixarProcessoArquivo")]
+        public IActionResult BaixarProcessoArquivo([FromQuery] int id)
         {
-            var upload = _serviceUpload.ObterPorId(id, "UploadArquivo");
+            var processo = _serviceProcesso.ObterPorId(id, "ProcessoArquivo");
 
-            if (upload.Status == (byte)EnumTaskStatus.Processando) return Json(this.CreateResponseObject(false, errorMessage: "O arquivo ainda está sendo processado!"));
+            if (processo.Status == (byte)EnumProcessoStatus.Processando) return Json(this.CreateResponseObject(false, errorMessage: "O arquivo ainda está sendo processado!"));
 
-            var arquivo = upload.UploadArquivo;
-
-            return Json(this.CreateResponseObject(arquivo != null, arquivo, errorMessage: "Desculpe, houve um erro ao baixar o arquivo! Por favor contate nosso suporte."));
-        }
-
-        [Authorize]
-        [HttpPost("ListarDownloads")]
-        public IActionResult ListarDownloads([FromBody] DTParam<DownloadFM> param)
-        {
-            var idEmpresa = _serviceUsuario.ObterIdEmpresaSelecionada(HttpContext);
-
-            var result = _serviceDownload.Listar(param, idEmpresa);
-
-            return Json(this.CreateResponseObject(true, new
-            {
-                total = result.Total,
-                data = result.Itens
-            }));
-        }
-
-        [Authorize]
-        [HttpGet("BaixarDownloadArquivo")]
-        public IActionResult BaixarDownloadArquivo([FromQuery] int id)
-        {
-            var download = _serviceDownload.ObterPorId(id, "DownloadArquivo");
-
-            if (download.Status == (byte)EnumTaskStatus.Processando) return Json(this.CreateResponseObject(false, errorMessage: "O arquivo ainda está sendo processado!"));
-
-            var arquivo = download.DownloadArquivo;
+            var arquivo = processo.ProcessoArquivo;
 
             return Json(this.CreateResponseObject(arquivo != null, arquivo, errorMessage: "Desculpe, houve um erro ao baixar o arquivo! Por favor contate nosso suporte."));
         }

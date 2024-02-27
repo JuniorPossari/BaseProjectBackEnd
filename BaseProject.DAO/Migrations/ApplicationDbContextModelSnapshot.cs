@@ -17,10 +17,10 @@ namespace BaseProject.DAO.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.4")
+                .HasAnnotation("ProductVersion", "8.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("BaseProject.DAO.Models.AspNetUser", b =>
                 {
@@ -87,80 +87,13 @@ namespace BaseProject.DAO.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("BaseProject.DAO.Models.Download", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime?>("DataFinal")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DataInicial")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("IdEmpresa")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdUsuario")
-                        .HasColumnType("int");
-
-                    b.Property<byte>("Status")
-                        .HasColumnType("tinyint");
-
-                    b.Property<byte>("Tipo")
-                        .HasColumnType("tinyint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex(new[] { "IdEmpresa" }, "IX_Download_IdEmpresa");
-
-                    b.HasIndex(new[] { "IdUsuario" }, "IX_Download_IdUsuario");
-
-                    b.ToTable("Download");
-                });
-
-            modelBuilder.Entity("BaseProject.DAO.Models.DownloadArquivo", b =>
-                {
-                    b.Property<int>("IdDownload")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Base64")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Extensao")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<int>("Tamanho")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Tipo")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.HasKey("IdDownload");
-
-                    b.ToTable("DownloadArquivo");
-                });
-
             modelBuilder.Entity("BaseProject.DAO.Models.Empresa", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("Ativa")
                         .HasColumnType("bit");
@@ -238,7 +171,7 @@ namespace BaseProject.DAO.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Exception")
                         .HasColumnType("nvarchar(max)");
@@ -269,7 +202,7 @@ namespace BaseProject.DAO.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("Data")
                         .HasColumnType("datetime2");
@@ -313,7 +246,7 @@ namespace BaseProject.DAO.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Exception")
                         .HasColumnType("nvarchar(max)");
@@ -353,13 +286,13 @@ namespace BaseProject.DAO.Migrations
                     b.ToTable("LogOpenAI");
                 });
 
-            modelBuilder.Entity("BaseProject.DAO.Models.Upload", b =>
+            modelBuilder.Entity("BaseProject.DAO.Models.Processo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DataFinal")
                         .HasColumnType("datetime2");
@@ -373,13 +306,6 @@ namespace BaseProject.DAO.Migrations
                     b.Property<int>("IdUsuario")
                         .HasColumnType("int");
 
-                    b.Property<string>("MD5")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .IsUnicode(false)
-                        .HasColumnType("char(32)")
-                        .IsFixedLength();
-
                     b.Property<byte>("Status")
                         .HasColumnType("tinyint");
 
@@ -388,16 +314,16 @@ namespace BaseProject.DAO.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex(new[] { "IdEmpresa" }, "IX_Upload_IdEmpresa");
+                    b.HasIndex(new[] { "IdEmpresa" }, "IX_Processo_IdEmpresa");
 
-                    b.HasIndex(new[] { "IdUsuario" }, "IX_Upload_IdUsuario");
+                    b.HasIndex(new[] { "IdUsuario" }, "IX_Processo_IdUsuario");
 
-                    b.ToTable("Upload");
+                    b.ToTable("Processo");
                 });
 
-            modelBuilder.Entity("BaseProject.DAO.Models.UploadArquivo", b =>
+            modelBuilder.Entity("BaseProject.DAO.Models.ProcessoArquivo", b =>
                 {
-                    b.Property<int>("IdUpload")
+                    b.Property<int>("IdProcesso")
                         .HasColumnType("int");
 
                     b.Property<string>("Base64")
@@ -422,9 +348,9 @@ namespace BaseProject.DAO.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.HasKey("IdUpload");
+                    b.HasKey("IdProcesso");
 
-                    b.ToTable("UploadArquivo");
+                    b.ToTable("ProcessoArquivo");
                 });
 
             modelBuilder.Entity("BaseProject.DAO.Models.Usuario", b =>
@@ -433,7 +359,7 @@ namespace BaseProject.DAO.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("Ativo")
                         .HasColumnType("bit");
@@ -558,7 +484,7 @@ namespace BaseProject.DAO.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -583,7 +509,7 @@ namespace BaseProject.DAO.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -662,39 +588,6 @@ namespace BaseProject.DAO.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("BaseProject.DAO.Models.Download", b =>
-                {
-                    b.HasOne("BaseProject.DAO.Models.Empresa", "IdEmpresaNavigation")
-                        .WithMany("Download")
-                        .HasForeignKey("IdEmpresa")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_Download_Empresa");
-
-                    b.HasOne("BaseProject.DAO.Models.Usuario", "IdUsuarioNavigation")
-                        .WithMany("Download")
-                        .HasForeignKey("IdUsuario")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_Download_Usuario");
-
-                    b.Navigation("IdEmpresaNavigation");
-
-                    b.Navigation("IdUsuarioNavigation");
-                });
-
-            modelBuilder.Entity("BaseProject.DAO.Models.DownloadArquivo", b =>
-                {
-                    b.HasOne("BaseProject.DAO.Models.Download", "IdDownloadNavigation")
-                        .WithOne("DownloadArquivo")
-                        .HasForeignKey("BaseProject.DAO.Models.DownloadArquivo", "IdDownload")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_DownloadArquivo_Download");
-
-                    b.Navigation("IdDownloadNavigation");
-                });
-
             modelBuilder.Entity("BaseProject.DAO.Models.Empresa", b =>
                 {
                     b.HasOne("BaseProject.DAO.Models.Usuario", "IdRepresentanteNavigation")
@@ -739,37 +632,37 @@ namespace BaseProject.DAO.Migrations
                     b.Navigation("IdUsuarioNavigation");
                 });
 
-            modelBuilder.Entity("BaseProject.DAO.Models.Upload", b =>
+            modelBuilder.Entity("BaseProject.DAO.Models.Processo", b =>
                 {
                     b.HasOne("BaseProject.DAO.Models.Empresa", "IdEmpresaNavigation")
-                        .WithMany("Upload")
+                        .WithMany("Processo")
                         .HasForeignKey("IdEmpresa")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("FK_Upload_Empresa");
+                        .HasConstraintName("FK_Processo_Empresa");
 
                     b.HasOne("BaseProject.DAO.Models.Usuario", "IdUsuarioNavigation")
-                        .WithMany("Upload")
+                        .WithMany("Processo")
                         .HasForeignKey("IdUsuario")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("FK_Upload_Usuario");
+                        .HasConstraintName("FK_Processo_Usuario");
 
                     b.Navigation("IdEmpresaNavigation");
 
                     b.Navigation("IdUsuarioNavigation");
                 });
 
-            modelBuilder.Entity("BaseProject.DAO.Models.UploadArquivo", b =>
+            modelBuilder.Entity("BaseProject.DAO.Models.ProcessoArquivo", b =>
                 {
-                    b.HasOne("BaseProject.DAO.Models.Upload", "IdUploadNavigation")
-                        .WithOne("UploadArquivo")
-                        .HasForeignKey("BaseProject.DAO.Models.UploadArquivo", "IdUpload")
+                    b.HasOne("BaseProject.DAO.Models.Processo", "IdProcessoNavigation")
+                        .WithOne("ProcessoArquivo")
+                        .HasForeignKey("BaseProject.DAO.Models.ProcessoArquivo", "IdProcesso")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("FK_UploadArquivo_Upload");
+                        .HasConstraintName("FK_ProcessoArquivo_Processo");
 
-                    b.Navigation("IdUploadNavigation");
+                    b.Navigation("IdProcessoNavigation");
                 });
 
             modelBuilder.Entity("BaseProject.DAO.Models.Usuario", b =>
@@ -866,40 +759,31 @@ namespace BaseProject.DAO.Migrations
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("BaseProject.DAO.Models.Download", b =>
-                {
-                    b.Navigation("DownloadArquivo");
-                });
-
             modelBuilder.Entity("BaseProject.DAO.Models.Empresa", b =>
                 {
-                    b.Navigation("Download");
-
                     b.Navigation("EmpresaLogo");
 
-                    b.Navigation("Upload");
+                    b.Navigation("Processo");
 
                     b.Navigation("UsuarioIdEmpresaNavigation");
 
                     b.Navigation("UsuarioIdEmpresaSelecionadaNavigation");
                 });
 
-            modelBuilder.Entity("BaseProject.DAO.Models.Upload", b =>
+            modelBuilder.Entity("BaseProject.DAO.Models.Processo", b =>
                 {
-                    b.Navigation("UploadArquivo");
+                    b.Navigation("ProcessoArquivo");
                 });
 
             modelBuilder.Entity("BaseProject.DAO.Models.Usuario", b =>
                 {
-                    b.Navigation("Download");
-
                     b.Navigation("Empresa");
 
                     b.Navigation("LogAcessoUsuario");
 
                     b.Navigation("LogOpenAI");
 
-                    b.Navigation("Upload");
+                    b.Navigation("Processo");
 
                     b.Navigation("UsuarioFoto");
                 });

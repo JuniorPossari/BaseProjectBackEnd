@@ -4,11 +4,8 @@ using BaseProject.DAO.Models;
 
 namespace BaseProject.DAO.Repository
 {
-	public class RepositoryUsuario : Repository<Usuario, ApplicationDbContext>, IRepositoryUsuario
+	public class RepositoryUsuario : Repository<Usuario>, IRepositoryUsuario
     {
-        public RepositoryUsuario() : base() { }
-
         public RepositoryUsuario(ApplicationDbContext context) : base(context) { }
-
     }
 }

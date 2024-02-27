@@ -11,6 +11,7 @@ using System.Text;
 using System.Security.Claims;
 using ClosedXML.Excel;
 using Microsoft.AspNetCore.Http.Extensions;
+using BaseProject.API.Controllers;
 
 namespace BaseProject.API.Areas.Gerenciamento.Controllers
 {
@@ -22,32 +23,35 @@ namespace BaseProject.API.Areas.Gerenciamento.Controllers
         private readonly int _idUsuario;
         private readonly int _idEmpresa;
         private UserManager<AspNetUser> _userManager;
-        private readonly IServiceAspNetUser _serviceAspNetUser;
+		private readonly ILogger<UsuarioController> _logger;
+		private readonly IServiceAspNetUser _serviceAspNetUser;
         private readonly IServiceUsuario _serviceUsuario;
         private readonly IServiceEmpresa _serviceEmpresa;
         private readonly IServiceEmail _serviceEmail;
-        private readonly IServiceUpload _serviceUpload;
+        private readonly IServiceProcesso _serviceProcesso;
         private readonly IServiceBusSender _serviceBusSender;
 
         public UsuarioController(
             IHttpContextAccessor httpContextAccessor,
             UserManager<AspNetUser> userManager,
-            IServiceAspNetUser serviceAspNetUser,
+			ILogger<UsuarioController> logger,
+			IServiceAspNetUser serviceAspNetUser,
             IServiceUsuario serviceUsuario,
             IServiceEmpresa serviceEmpresa,
             IServiceEmail serviceEmail,
-            IServiceUpload serviceUpload,
+            IServiceProcesso serviceProcesso,
             IServiceBusSender serviceBusSender
         )
         {
             _idUsuario = Int32.Parse(httpContextAccessor.HttpContext.User.FindFirstValue("IdUsuario"));
             _idEmpresa = serviceUsuario.ObterIdEmpresaSelecionada(httpContextAccessor.HttpContext);
             _userManager = userManager;
+            _logger = logger;
             _serviceAspNetUser = serviceAspNetUser;
             _serviceUsuario = serviceUsuario;
             _serviceEmpresa = serviceEmpresa;
             _serviceEmail = serviceEmail;
-            _serviceUpload = serviceUpload;
+            _serviceProcesso = serviceProcesso;
             _serviceBusSender = serviceBusSender;
         }
 
@@ -108,9 +112,9 @@ namespace BaseProject.API.Areas.Gerenciamento.Controllers
         [HttpPost("Carregar")]
         public async Task<IActionResult> Carregar([FromBody] CarregarUsuariosVM model)
         {
-            var processando = _serviceUpload.Processando(_idEmpresa);
+            var processando = _serviceProcesso.Processando(_idEmpresa);
 
-            if (processando) return Json(this.CreateResponseObject(false, errorMessage: "Desculpe, existe um processo de upload em andamento! Por favor aguarde o processo finalizar e tente novamente."));
+            if (processando) return Json(this.CreateResponseObject(false, errorMessage: "Desculpe, existe um processo em andamento! Por favor aguarde o processo finalizar e tente novamente."));
 
             var arquivo = model.Arquivo;
 
@@ -141,41 +145,41 @@ namespace BaseProject.API.Areas.Gerenciamento.Controllers
                     worksheet.Cell(1, 4).GetString().RemoveSpace() != "CPF *" )
                     return Json(this.CreateResponseObject(false, errorMessage: "Colunas do modelo inválidas!"));
             }
-            catch
+            catch (Exception ex)
             {
-                return Json(this.CreateResponseObject(false, errorMessage: "Erro ao verificar o modelo! Tenha certeza que está utilizando o modelo baixado e preencheendo os dados corretamente sem alterar o nome das colunas ou da planilha. Caso o erro persista, contate nosso suporte."));
+				_logger.LogError(ex, ex.InnerException?.Message ?? ex.Message);
+				return Json(this.CreateResponseObject(false, errorMessage: "Erro ao verificar o modelo! Tenha certeza que está utilizando o modelo baixado e preencheendo os dados corretamente sem alterar o nome das colunas ou da planilha. Caso o erro persista, contate nosso suporte."));
             }
 
-            var upload = new Upload
+            var processo = new Processo
             {
                 IdUsuario = _idUsuario,
                 IdEmpresa = _idEmpresa,
-                MD5 = Cryptography.CreateMD5(arquivo.Base64),
-                Tipo = (byte)EnumUploadTipo.Usuario,
-                Status = (byte)EnumTaskStatus.Processando,
+                Tipo = (byte)EnumProcessoTipo.CarregarUsuarios,
+                Status = (byte)EnumProcessoStatus.Processando,
                 DataInicial = DateTime.Now.ToBrasiliaTime(),
             };
 
-            var sucesso = _serviceUpload.Adicionar(upload);
+            var sucesso = _serviceProcesso.Adicionar(processo);
 
             if (sucesso)
             {
-                var message = new ServiceBusMessageUpload<CarregarUsuariosVM>(upload.Id, model);
+                var message = new ServiceBusMessageProcesso<CarregarUsuariosVM>(processo.Id, model);
 
-                sucesso = await _serviceBusSender.SendMessage((byte)EnumAzureServiceBusQueue.CarregarUsuarios, message);
+                sucesso = await _serviceBusSender.SendMessage(processo.Tipo, message);
 
-                if (!sucesso) _serviceUpload.Deletar(upload.Id);
+                if (!sucesso) _serviceProcesso.Deletar(processo.Id);
             }
 
-            return Json(this.CreateResponseObject(sucesso, successMessage: "Sucesso ao iniciar o processo de upload!", errorMessage: "Erro ao iniciar o processo de upload! Por favor tente novamente ou contate nosso suporte."));
+            return Json(this.CreateResponseObject(sucesso, successMessage: "Sucesso ao iniciar o processo!", errorMessage: "Erro ao iniciar o processo! Por favor tente novamente ou contate nosso suporte."));
         }
 
         [HttpPost("Adicionar")]
         public async Task<IActionResult> Adicionar([FromBody] UsuarioVM model)
         {
-			var processando = _serviceUpload.Processando(_idEmpresa);
+			var processando = _serviceProcesso.Processando(_idEmpresa);
 
-			if (processando) return Json(this.CreateResponseObject(false, errorMessage: "Desculpe, existe um processo de upload em andamento! Por favor aguarde o processo finalizar e tente novamente."));
+			if (processando) return Json(this.CreateResponseObject(false, errorMessage: "Desculpe, existe um processo em andamento! Por favor aguarde o processo finalizar e tente novamente."));
 
 			var empresa = _serviceEmpresa.ObterPorId(_idEmpresa);
 
@@ -246,9 +250,9 @@ namespace BaseProject.API.Areas.Gerenciamento.Controllers
 		[HttpPut("Editar")]
 		public async Task<IActionResult> Editar([FromBody] UsuarioVM model)
 		{
-            var processando = _serviceUpload.Processando(_idEmpresa);
+            var processando = _serviceProcesso.Processando(_idEmpresa);
 
-			if (processando) return Json(this.CreateResponseObject(false, errorMessage: "Desculpe, existe um processo de upload em andamento! Por favor aguarde o processo finalizar e tente novamente."));
+			if (processando) return Json(this.CreateResponseObject(false, errorMessage: "Desculpe, existe um processo em andamento! Por favor aguarde o processo finalizar e tente novamente."));
 
 			var user = _serviceAspNetUser.ObterPorId(model.Id, "Usuario.UsuarioPerfil,Usuario.UsuarioFoto");
 

@@ -2,7 +2,7 @@
 
 namespace BaseProject.DAO.IRepository
 {
-    public interface IRepositoryAspNetUser : IRepository<AspNetUser>
+	public interface IRepositoryProcesso : IRepository<Processo>
     {
 
     }

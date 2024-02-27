@@ -1,22 +1,19 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using BaseProject.DAO.Models;
-using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Expressions;
+using BaseProject.DAO.Data;
 
 namespace BaseProject.DAO.IRepository
 {
-    public interface IRepository<TEntity, TContext>
-      where TEntity : class
-      where TContext : IdentityDbContext<AspNetUser>, new()
+	public interface IRepository<TEntity>
     {
-
         bool Insert(TEntity entity);
 
         bool InsertAll(IEnumerable<TEntity> entities);
 
         bool Delete(int id);
 
-        bool DeleteAll(IEnumerable<TEntity> entities);
+        bool Delete(TEntity entity);
+
+		bool DeleteAll(IEnumerable<TEntity> entities);
 
         bool DeleteByFilter(Expression<Func<TEntity, bool>> filter);
 
@@ -46,14 +43,7 @@ namespace BaseProject.DAO.IRepository
             string includeProperties = "",
             bool noTracking = false);
 
-        TEntity[] GetBulk(
-            Expression<Func<TEntity, bool>> filter,
-            int limit,
-            string includeProperties = "",
-            bool noTracking = false);
-
-
-        TContext GetContext();
+        ApplicationDbContext GetContext();
 
         TEntity[] Filter(
             IQueryable<TEntity> query,
@@ -71,6 +61,5 @@ namespace BaseProject.DAO.IRepository
             out int total,
             string includeProperties = ""
         );
-
     }
 }

@@ -30,7 +30,7 @@ namespace BaseProject.DAO.Service
         {
             try
             {
-                var sender = _client.CreateSender($"{((EnumAzureServiceBusQueue)queue).GetEnumDisplayName().ToLower()}_{_env.EnvironmentName.ToLower()}");
+                var sender = _client.CreateSender($"{((EnumProcessoTipo)queue).GetDisplayPrompt().ToLower()}_{_env.EnvironmentName.ToLower()}");
 
                 await sender.SendMessageAsync(new ServiceBusMessage(JsonConvert.SerializeObject(message)));
 
@@ -38,12 +38,11 @@ namespace BaseProject.DAO.Service
 
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
-                _logger.LogError($"Erro ao enviar mensagem ao Azure Service Bus! Queue Enum: {queue} - Queue Name: {((EnumAzureServiceBusQueue)queue).GetEnumDisplayName().ToLower()}_{_env.EnvironmentName.ToLower()}");
+                _logger.LogError(ex, $"Erro ao enviar mensagem ao Azure Service Bus! Queue Enum: {queue} - Queue Name: {((EnumProcessoTipo)queue).GetDisplayPrompt().ToLower()}_{_env.EnvironmentName.ToLower()}");
                 return false;
             }
         }
-
     }
 }

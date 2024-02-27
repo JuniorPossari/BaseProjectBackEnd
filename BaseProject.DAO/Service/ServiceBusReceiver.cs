@@ -54,10 +54,10 @@ namespace BaseProject.DAO.Service
         {
             try
             {
-                foreach(EnumAzureServiceBusQueue queue in Enum.GetValues(typeof(EnumAzureServiceBusQueue)))
+                foreach(EnumProcessoTipo queue in Enum.GetValues(typeof(EnumProcessoTipo)))
                 {
                     var queue_enum = (byte)queue;
-                    var queue_name = $"{queue.GetEnumDisplayName().ToLower()}_{_env.EnvironmentName.ToLower()}";
+                    var queue_name = $"{queue.GetDisplayPrompt().ToLower()}_{_env.EnvironmentName.ToLower()}";
 
                     try
                     {
@@ -71,9 +71,9 @@ namespace BaseProject.DAO.Service
 
                             switch (queue_enum)
                             {
-                                case (byte)EnumAzureServiceBusQueue.CarregarUsuarios:
+                                case (byte)EnumProcessoTipo.CarregarUsuarios:
                                     {
-                                        var message = JsonConvert.DeserializeObject<ServiceBusMessageUpload<CarregarUsuariosVM>>(body);
+                                        var message = JsonConvert.DeserializeObject<ServiceBusMessageProcesso<CarregarUsuariosVM>>(body);
 
                                         await CarregarUsuarios(message);
 
@@ -85,19 +85,19 @@ namespace BaseProject.DAO.Service
 
                         await receiver.CloseAsync();
                     }
-                    catch
-                    {
-                        _logger.LogError($"Erro ao receber mensagens do Azure Service Bus! Queue Enum: {queue_enum} - Queue Name: {queue_name}");
+					catch (Exception ex)
+					{
+                        _logger.LogError(ex, $"Erro ao receber mensagens do Azure Service Bus! Queue Enum: {queue_enum} - Queue Name: {queue_name}");
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                _logger.LogError($"Erro no foreach (EnumAzureServiceBusQueue) ao receber mensagens do Azure Service Bus!");
+                _logger.LogError(ex, $"Erro no foreach (EnumProcessoTipo) ao receber mensagens do Azure Service Bus!");
             }
         }
 
-        private async Task CarregarUsuarios(ServiceBusMessageUpload<CarregarUsuariosVM> message)
+        private async Task CarregarUsuarios(ServiceBusMessageProcesso<CarregarUsuariosVM> message)
         {
             var sucesso = false;
 
@@ -109,9 +109,9 @@ namespace BaseProject.DAO.Service
 
                 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AspNetUser>>();
 
-                var upload = context.Upload.AsNoTracking().First(x => x.Id == message.IdUpload);
+                var processo = context.Processo.AsNoTracking().First(x => x.Id == message.IdProcesso);
 
-                var idEmpresa = upload.IdEmpresa;
+                var idEmpresa = processo.IdEmpresa;
 
                 var empresa = context.Empresa.AsNoTracking().First(x => x.Id == idEmpresa);
 
@@ -205,31 +205,35 @@ namespace BaseProject.DAO.Service
 
                         usuarios.Add(user);
                     }
-                    catch (Exception e)
+                    catch (Exception ex)
                     {
-                        LogUpload(message.IdUpload, $"Linha: {linha} - Coluna: {coluna} - Erro: {e.InnerException?.Message ?? e.Message}");
+						_logger.LogError(ex, ex.InnerException?.Message ?? ex.Message);
+						LogProcesso(message.IdProcesso, $"Linha: {linha} - Coluna: {coluna} - Erro: {ex.InnerException?.Message ?? ex.Message}");
                     }
                 }
 
                 sucesso = true;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                LogUpload(message.IdUpload, e.InnerException?.Message ?? e.Message);
+				_logger.LogError(ex, ex.InnerException?.Message ?? ex.Message);
+				LogProcesso(message.IdProcesso, ex.InnerException?.Message ?? ex.Message);
             }
 
-            FinalizarUpload(message.IdUpload, sucesso);
+            FinalizarProcesso(message.IdProcesso, sucesso);
         }
 
-        private void LogUpload(int idUpload, string message)
+        private void LogProcesso(int idProcesso, string message)
         {
             try
             {
-                using var context = new ApplicationDbContext();
+				using var scope = _scopeFactory.CreateScope();
 
-                var upload = context.Upload.Include(x => x.UploadArquivo).First(x => x.Id == idUpload);
+				using var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-                if (upload.UploadArquivo == null)
+				var processo = context.Processo.Include(x => x.ProcessoArquivo).First(x => x.Id == idProcesso);
+
+                if (processo.ProcessoArquivo == null)
                 {
                     using var ms = new MemoryStream();
                     using var sw = new StreamWriter(ms);
@@ -242,9 +246,9 @@ namespace BaseProject.DAO.Service
 
                     ms.Close();
 
-                    upload.UploadArquivo = new UploadArquivo
+                    processo.ProcessoArquivo = new ProcessoArquivo
                     {
-                        Nome = $"LOG_UPLOAD_{((EnumUploadTipo)upload.Tipo).GetEnumDisplayName().ToUpper()}_{upload.Id}_{upload.DataInicial:yyyy-MM-dd_HH-mm-ss}.txt",
+                        Nome = $"LOG_PROCESSO_{((EnumProcessoTipo)processo.Tipo).GetDisplayName().ToUpper()}_{processo.Id}_{processo.DataInicial:yyyy-MM-dd_HH-mm-ss}.txt",
                         Extensao = "txt",
                         Tamanho = bytes.Length,
                         Tipo = "text/plain",
@@ -253,7 +257,7 @@ namespace BaseProject.DAO.Service
                 }
                 else
                 {
-                    using var msReader = new MemoryStream(Convert.FromBase64String(upload.UploadArquivo.Base64));
+                    using var msReader = new MemoryStream(Convert.FromBase64String(processo.ProcessoArquivo.Base64));
                     using var sr = new StreamReader(msReader);
                     using var msWriter = new MemoryStream();
                     using var sw = new StreamWriter(msWriter);
@@ -270,47 +274,49 @@ namespace BaseProject.DAO.Service
                     msReader.Close();
                     msWriter.Close();
 
-                    upload.UploadArquivo.Nome = $"LOG_UPLOAD_{((EnumUploadTipo)upload.Tipo).GetEnumDisplayName().ToUpper()}_{upload.Id}_{upload.DataInicial:yyyy-MM-dd_HH-mm-ss}.txt";
-                    upload.UploadArquivo.Extensao = "txt";
-                    upload.UploadArquivo.Tamanho = bytes.Length;
-                    upload.UploadArquivo.Tipo = "text/plain";
-                    upload.UploadArquivo.Base64 = Convert.ToBase64String(bytes);
+                    processo.ProcessoArquivo.Nome = $"LOG_PROCESSO_{((EnumProcessoTipo)processo.Tipo).GetDisplayName().ToUpper()}_{processo.Id}_{processo.DataInicial:yyyy-MM-dd_HH-mm-ss}.txt";
+                    processo.ProcessoArquivo.Extensao = "txt";
+                    processo.ProcessoArquivo.Tamanho = bytes.Length;
+                    processo.ProcessoArquivo.Tipo = "text/plain";
+                    processo.ProcessoArquivo.Base64 = Convert.ToBase64String(bytes);
                 }
 
-                context.Upload.Update(upload);
+                context.Processo.Update(processo);
 
                 context.SaveChanges();
             }
-            catch
+            catch (Exception ex)
             {
-                _logger.LogError($"Erro ao adicionar/editar log do processo de upload! IdUpload: {idUpload} - Message: {message}");
+                _logger.LogError(ex, $"Erro ao adicionar/editar log do processo! IdProcesso: {idProcesso} - Message: {message}");
             }
         }
 
-        private void FinalizarUpload(int idUpload, bool sucesso)
+        private void FinalizarProcesso(int idProcesso, bool sucesso)
         {
             try
             {
-                using var context = new ApplicationDbContext();
+				using var scope = _scopeFactory.CreateScope();
 
-                var upload = context.Upload.Include(x => x.UploadArquivo).First(x => x.Id == idUpload);
+				using var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-                upload.DataFinal = DateTime.Now.ToBrasiliaTime();
-                upload.Status = (byte)EnumTaskStatus.Completo;
+				var processo = context.Processo.Include(x => x.ProcessoArquivo).First(x => x.Id == idProcesso);
 
-                if (upload.UploadArquivo != null)
+                processo.DataFinal = DateTime.Now.ToBrasiliaTime();
+                processo.Status = (byte)EnumProcessoStatus.Completo;
+
+                if (processo.ProcessoArquivo != null)
                 {
-                    if (sucesso) upload.Status = (byte)EnumTaskStatus.Incompleto;
-                    else upload.Status = (byte)EnumTaskStatus.Erro;
+                    if (sucesso) processo.Status = (byte)EnumProcessoStatus.Incompleto;
+                    else processo.Status = (byte)EnumProcessoStatus.Erro;
                 }
 
-                context.Upload.Update(upload);
+                context.Processo.Update(processo);
 
                 context.SaveChanges();
             }
-            catch
+            catch (Exception ex)
             {
-                _logger.LogError($"Erro ao finalizar o processo de upload! IdUpload: {idUpload} - Sucesso: {sucesso}");
+                _logger.LogError(ex, $"Erro ao finalizar o processo! IdProcesso: {idProcesso} - Sucesso: {sucesso}");
             }
         }
     }

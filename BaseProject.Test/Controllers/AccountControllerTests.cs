@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Moq;
 using BaseProject.API.Controllers;
 using BaseProject.DAO.Data;
@@ -29,17 +30,16 @@ namespace BaseProject.Test.Controllers
         private ServiceUsuario _serviceUsuario;
         private ServiceEmpresa _serviceEmpresa;
         private ServiceLogAcessoUsuario _serviceLogAcessoUsuario;
-        private ServiceUpload _serviceUpload;
-        private ServiceDownload _serviceDownload;     
+        private ServiceProcesso _serviceProcesso;  
         private ServiceAspNetUser _serviceAspNetUser;        
+        private Mock<ILogger<AccountController>> _loggerMock;
         private Mock<IServiceEmail> _serviceEmailMock;
         private Mock<IServiceToken> _serviceTokenMock;
         private Mock<IDetectionService> _serviceDetectionMock;        
         private Mock<IServiceUsuario> _serviceUsuarioMock;
         private Mock<IServiceEmpresa> _serviceEmpresaMock;
         private Mock<IServiceLogAcessoUsuario> _serviceLogAcessoUsuarioMock;
-        private Mock<IServiceUpload> _serviceUploadMock;
-        private Mock<IServiceDownload> _serviceDownloadMock;
+        private Mock<IServiceProcesso> _serviceProcessoMock;
         private Mock<IServiceAspNetUser> _serviceAspNetUserMock;
         private AccountController _accountController;
 
@@ -52,28 +52,28 @@ namespace BaseProject.Test.Controllers
             _userManagerMock = new Mock<UserManagerMock>();
             _signInManagerMock = new Mock<SignInManagerMock>();
 
-            _serviceEmailMock = new Mock<IServiceEmail>();
+            _loggerMock = new Mock<ILogger<AccountController>>();
+			_serviceEmailMock = new Mock<IServiceEmail>();
             _serviceTokenMock = new Mock<IServiceToken>();
             _serviceDetectionMock = ServicesMock.CreateDetectionService();
             
             _serviceUsuario = new ServiceUsuario(new RepositoryUsuario(_context));
             _serviceEmpresa = new ServiceEmpresa(new RepositoryEmpresa(_context));
             _serviceLogAcessoUsuario = new ServiceLogAcessoUsuario(new RepositoryLogAcessoUsuario(_context));
-            _serviceUpload = new ServiceUpload(new RepositoryUpload(_context));
-            _serviceDownload = new ServiceDownload(new RepositoryDownload(_context));
+            _serviceProcesso = new ServiceProcesso(new RepositoryProcesso(_context));
             _serviceAspNetUser = new ServiceAspNetUser(new RepositoryAspNetUser(_context));
 
             _serviceUsuarioMock = new Mock<IServiceUsuario>();
             _serviceEmpresaMock = new Mock<IServiceEmpresa>();
             _serviceLogAcessoUsuarioMock = new Mock<IServiceLogAcessoUsuario>();
-            _serviceUploadMock = new Mock<IServiceUpload>();
-            _serviceDownloadMock = new Mock<IServiceDownload>();
+            _serviceProcessoMock = new Mock<IServiceProcesso>();
             _serviceAspNetUserMock = new Mock<IServiceAspNetUser>();
 
             _accountController = new AccountController
             (
                 _userManagerMock.Object,
                 _signInManagerMock.Object,
+                _loggerMock.Object,
                 _serviceEmailMock.Object,
                 _serviceUsuarioMock.Object,
                 _serviceEmpresaMock.Object,
@@ -81,8 +81,7 @@ namespace BaseProject.Test.Controllers
                 _serviceDetectionMock.Object,
                 _serviceLogAcessoUsuarioMock.Object,
                 _memoryCache,
-                _serviceUploadMock.Object,
-                _serviceDownloadMock.Object,
+                _serviceProcessoMock.Object,
                 _serviceAspNetUserMock.Object
             );
             _accountController.CreateControllerContextMock();
